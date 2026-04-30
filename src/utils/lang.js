@@ -1,4 +1,4 @@
-// src/utils/lang.js
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../i18n";
 
