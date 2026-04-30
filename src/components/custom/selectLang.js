@@ -1,13 +1,7 @@
+// src/components/custom/SelectLang.js
 import React, { useState } from "react";
-import {
-  Text,
-  TouchableOpacity,
-  Modal,
-  View,
-  FlatList
-} from "react-native";
-
-import { setAppLanguage } from "../../utils/lang";
+import { Text, TouchableOpacity, Modal, View, FlatList } from "react-native";
+import { useLang } from "../../context/langContext";
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -16,12 +10,14 @@ const LANGUAGES = [
 ];
 
 const SelectLang = () => {
-  const [visible, setVisible] = useState(false);
+  const { changeLanguage, t } = useLang();
+  const [visible, setVisible] = useState(true);
+  // c
   const [selectedLang, setSelectedLang] = useState('Select Language');
 
   const selectLanguage = async (lang) => {
     setSelectedLang(lang.label);
-    await setAppLanguage(lang.code);
+    await changeLanguage(lang.code); // ← setAppLanguage ki jagah yeh
     setVisible(false);
   };
 
@@ -43,28 +39,15 @@ const SelectLang = () => {
       </TouchableOpacity>
 
       <Modal visible={visible} transparent animationType="slide">
-        <View style={{
-          flex: 1,
-          backgroundColor: "rgba(0,0,0,0.5)",
-          justifyContent: "center"
-        }}>
-          <View style={{
-            backgroundColor: "#fff",
-            margin: 20,
-            borderRadius: 20,
-            padding: 20,
-            maxHeight: "70%"
-          }}>
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center" }}>
+          <View style={{ backgroundColor: "#fff", margin: 20, borderRadius: 20, padding: 20, maxHeight: "70%" }}>
             <FlatList
               data={LANGUAGES}
               keyExtractor={(item) => item.code}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => selectLanguage(item)}
-                  style={{
-                    paddingVertical: 12,
-                    borderBottomWidth: 0.5
-                  }}>
+                  style={{ paddingVertical: 12, borderBottomWidth: 0.5 }}>
                   <Text style={{ fontSize: 16 }}>{item.label}</Text>
                 </TouchableOpacity>
               )}
@@ -76,4 +59,4 @@ const SelectLang = () => {
   );
 };
 
-export default SelectLang;  
+export default SelectLang;

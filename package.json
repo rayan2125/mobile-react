@@ -7,10 +7,13 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "clean": "cd android  && gradlew clean",
+    "publish": "cd android  &&  gradlew assemblerelease"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^3.0.2",
+    "@gorhom/bottom-sheet": "^5.2.13",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native/new-app-screen": "0.85.2",
     "@react-navigation/elements": "^2.9.15",
     "@react-navigation/native": "^7.2.2",
