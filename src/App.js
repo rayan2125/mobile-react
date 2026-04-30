@@ -1,16 +1,25 @@
 import { NavigationContainer } from "@react-navigation/native";
 import RootNavigation from "./navigation/rootNavigation";
-import { LangProvider } from "./context/langContext";
+
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { LanguageProvider } from "./context/langContext";
 
 
 const App = () => {
     return (
-        <LangProvider>
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
+                <LanguageProvider>
 
-            <NavigationContainer>
-                <RootNavigation />
-            </NavigationContainer>
-        </LangProvider>
+                <BottomSheetModalProvider>
+                    <NavigationContainer>
+                        <RootNavigation />
+                    </NavigationContainer>
+
+                </BottomSheetModalProvider>
+                </LanguageProvider>
+           
+        </GestureHandlerRootView>
     )
 };
 

@@ -1,36 +1,48 @@
-// src/context/LangContext.js
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { setAppLanguage, loadAppLanguage } from "../utils/lang";
-import i18n from "../i18n";
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import i18n from '../i18n/i18n';
 
-// Context banao
-const LangContext = createContext();
+const LanguageContext = createContext();
 
-// Provider — poori app ko wrap karega
-export const LangProvider = ({ children }) => {
-  const [locale, setLocale] = useState(i18n.locale);
+export const LanguageProvider = ({ children }) => {
+  const [currentLang, setCurrentLang] = useState('en');
 
   useEffect(() => {
-    // App open hone par pehle saved language load karo
-    const init = async () => {
-      await loadAppLanguage();
-      setLocale(i18n.locale);
-    };
-    init();
+    // Initialize i18n
+    i18n.init().then(() => {
+      setCurrentLang(i18n.getCurrentLanguage());
+    });
+
+    // Listen for changes
+    const unsubscribe = i18n.addListener((lang) => {
+      setCurrentLang(lang);
+    });
+
+    return unsubscribe;
   }, []);
 
-  // Yeh function SelectLang call karega
   const changeLanguage = async (langCode) => {
-    await setAppLanguage(langCode);
-    setLocale(langCode); // yeh re-render trigger karega
+    await i18n.setLanguage(langCode);
+    setCurrentLang(langCode);
   };
 
+  const t = (key, params) => i18n.t(key, params);
+
   return (
-    <LangContext.Provider value={{ locale, changeLanguage, t: (key) => i18n.t(key) }}>
+    <LanguageContext.Provider value={{
+      currentLang,
+      changeLanguage,
+      t,
+      availableLanguages: i18n.getAvailableLanguages()
+    }}>
       {children}
-    </LangContext.Provider>
+    </LanguageContext.Provider>
   );
 };
 
-// Yeh hook har screen mein use karenge
-export const useLang = () => useContext(LangContext);
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within LanguageProvider');
+  }
+  return context;
+};

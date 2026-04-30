@@ -1,60 +1,68 @@
-// src/components/custom/SelectLang.js
 import React, { useState } from "react";
-import { Text, TouchableOpacity, Modal, View, FlatList } from "react-native";
+import { Text, TouchableOpacity, FlatList, View, Image } from "react-native";
 import { useLang } from "../../context/langContext";
+import CustomBottomSheet from "../layout/bottomSheetLayout";
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'hi', label: 'हिंदी' },
   { code: 'mr', label: 'मराठी' },
+  { code: 'bn', label: 'বাংলা' },
+
 ];
 
 const SelectLang = () => {
-  const { changeLanguage, t } = useLang();
+  const { changeLanguage } = useLang();
   const [visible, setVisible] = useState(true);
-  // c
+
   const [selectedLang, setSelectedLang] = useState('Select Language');
 
   const selectLanguage = async (lang) => {
     setSelectedLang(lang.label);
-    await changeLanguage(lang.code); // ← setAppLanguage ki jagah yeh
+    await changeLanguage(lang.code);
     setVisible(false);
   };
 
   return (
     <>
       <TouchableOpacity
-        onPress={() => setVisible(true)}
+        onPress={() => setVisible(true)} // yeh open karega
         style={{
           width: '80%',
           alignItems: 'center',
           backgroundColor: '#fff',
           marginBottom: 30,
           borderRadius: 30,
-          paddingVertical: 10
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+          elevation: 10
         }}>
         <Text style={{ color: "#691a1a", fontSize: 16 }}>
           {selectedLang}
         </Text>
+
       </TouchableOpacity>
 
-      <Modal visible={visible} transparent animationType="slide">
-        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center" }}>
-          <View style={{ backgroundColor: "#fff", margin: 20, borderRadius: 20, padding: 20, maxHeight: "70%" }}>
-            <FlatList
-              data={LANGUAGES}
-              keyExtractor={(item) => item.code}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => selectLanguage(item)}
-                  style={{ paddingVertical: 12, borderBottomWidth: 0.5 }}>
-                  <Text style={{ fontSize: 16 }}>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </View>
-      </Modal>
+      <CustomBottomSheet
+        value={60}
+        visible={visible}
+        onClose={() => setVisible(false)}
+      >
+        <FlatList
+          data={LANGUAGES}
+          keyExtractor={(item) => item.code}
+          renderItem={({ item }) => (
+<View style={{marginHorizontal:15}}>
+            <TouchableOpacity
+              onPress={() => selectLanguage(item)}
+              style={{ paddingVertical: 12, borderBottomWidth: 0.5, paddingHorizontal: 20 }}>
+              <Text style={{ fontSize: 16, color: 'red' }}>{item.label}</Text>
+            </TouchableOpacity>
+
+</View>
+          )}
+        />
+      </CustomBottomSheet>
     </>
   );
 };
